@@ -29,3 +29,47 @@ Nakon analize koda koji je AI generisao, uočio sam nekoliko stvari koje sam mor
 1. **Nedostatak apstrakcije:** AI je u prvoj iteraciji klasu `ObradaRezervacija` direktno vezao za konkretne klase, što krši Dependency Inversion. Ispravio sam to uvođenjem `Protocol` klasa (`RezervacijaRepository` i `NotifikacioniServis`) i dodavanjem *type hintinga* u konstruktor.
 2. **Slabo pokriveni testovi:** Generisani testovi su pokrivali samo "srećan put" (happy path). Morao sam da dopunim testove tako što sam dodao proveru rada funkcije `generisi_izvjestaj()` na praznoj listi rezervacija, kako bih sprečio potencijalne greške u produkciji.
 3. **Prilagođavanje okruženju (Colab):** Zbog povremenih nestabilnosti Google Colab servera i greške `Failed to fetch`, odlučio sam da izbegnem spoljne zavisnosti poput `pytest` biblioteke. Testove sam prilagodio da koriste ugrađene `assert` naredbe unutar obične Python funkcije, što omogućava da se testiranje izvrši bez ikakvih dodatnih instalacija.
+
+## Mini projekat 2 – Mini framework za ML eksperimente
+
+Cilj projekta je implementacija jednostavnog frameworka za eksperimente mašinskog učenja u Pythonu, uz primjenu sljedećih dizajn obrazaca:
+
+- **Factory:** Kreiranje ML modela (Linearni model, Decision Tree, kNN).
+- **Strategy:** Različite metrike za evaluaciju modela.
+- **Observer:** Praćenje događaja tokom treniranja.
+- **Template Method:** Definisanje toka ML eksperimenta.
+- **Decorator:** Mjerenje vremena izvršavanja.
+
+### Demonstracija
+
+Framework se demonstrira na Iris skupu podataka korišćenjem modela iz biblioteke scikit-learn.
+
+### Testiranje
+
+Testiranje se vrši pomoću pytest biblioteke, uz najmanje pet testova.
+
+Pokretanje testova:
+
+```bash
+pytest -v
+```
+
+### Mermaid dijagram klasa
+
+```mermaid
+classDiagram
+    ModelFactory ..> MLModel : creates
+    MLModel <|-- LinearModel
+    MLModel <|-- DecisionTreeModel
+    MLModel <|-- KNNModel
+    MetricStrategy <|.. AccuracyStrategy
+    Observer <|.. ExperimentObserver
+    Experiment --> MLModel
+    Experiment --> MetricStrategy
+    Experiment --> Observer
+    TimedDecorator ..> Experiment
+```
+
+### AI alati
+
+AI alati korišćeni su kao pomoć pri razumijevanju dizajn obrazaca, organizaciji koda i pisanju dokumentacije.
