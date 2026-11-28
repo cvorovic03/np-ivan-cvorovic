@@ -73,3 +73,30 @@ classDiagram
 ### AI alati
 
 AI alati korišćeni su kao pomoć pri razumijevanju dizajn obrazaca, organizaciji koda i pisanju dokumentacije.
+
+## Mini projekat 3: Testiran i obezbijeđen API
+
+U okviru ovog mini projekta kreirana je FastAPI aplikacija sa dva endpointa (`POST /items/{item_id}` i `GET /items/{item_id}`). Fokus je bio na testiranju, kontinuiranoj integraciji (CI) i bezbjednosnoj analizi.
+
+### Struktura projekta
+- `app/main.py` – FastAPI aplikacija i rute.
+- `tests/test_main.py` – 8 pytest testova (uključujući neispravne unose i granične slučajeve).
+- `requirements.txt` – Zavisnosti projekta.
+- `.github/workflows/ci.yml` – GitHub Actions pipeline (ruff, mypy, pytest).
+
+### Analiza rizika i mjere smanjenja
+
+1. **Rizik: Neispravni ili zlonamjerni unosi korisnika (Input Validation)**
+   - *Opis:* Korisnik može poslati podatke koji nisu u skladu sa očekivanim formatom (npr. negativna cijena, tekst umjesto broja), što može dovesti do grešaka u radu aplikacije.
+   - *Mjera smanjenja:* Korišćenje Pydantic modela za strogu validaciju tipova i ograničenja (npr. `gt=0` za cijenu, `min_length=2` za naziv). Implementirani su testovi koji pokrivaju neispravne unose i provjeravaju da API vraća `422 Unprocessable Entity`.
+
+2. **Rizik: Bezbjednosne ranjivosti u zavisnostima (Third-party Libraries)**
+   - *Opis:* Biblioteke trećih strana (poput FastAPI-ja ili Uvicorn-a) mogu imati poznate ranjivosti koje napadači mogu iskoristiti.
+   - *Mjera smanjenja:* Redovno pokretanje `pip-audit` alata radi otkrivanja ranjivih verzija paketa i `bandit` alata za statičku analizu koda. Ovi alati su integrisani u CI proces.
+
+3. **Rizik: Greške u logici i regresije pri izmjenama koda**
+   - *Opis:* Izmjene u kodu mogu nehotice pokvariti postojeću funkcionalnost (regresija) ili unijeti logičke greške koje nisu očigledne.
+   - *Mjera smanjenja:* Uspostavljanje automatizovanog CI pipeline-a (GitHub Actions) koji se pokreće pri svakom `push`-u. Pipeline obavezno prolazi kroz `ruff` (linting), `mypy` (provjera tipova) i `pytest` (jedinični testovi). Svaki neuspešan test blokira spajanje koda (merge).
+
+### AI alati
+AI asistent (ChatGPT) korišćen je kao pomoć pri struktuiranju projekta, pisanju testova i dokumentacije.
